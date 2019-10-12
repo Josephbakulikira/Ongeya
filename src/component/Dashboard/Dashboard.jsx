@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { Grid, Button } from 'semantic-ui-react'
 import PostList from '../PostList/PostList'
 import PostForm from '../PostList/Formular/PostForm'
+import cuid from 'cuid'
 
 const Posts = [
   {
     id: '1',
     title: 'ba shindikana basha kuwa ba mingi',
-    date: '2018-03-27T11:00:00+00:00',
+    date: '2018-03-27',
     category: 'culture',
     description:    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
     city: 'Kinshasa, CD',
@@ -30,7 +31,7 @@ const Posts = [
   {
     id: '2',
     title: 'ma combat zisha punguka',
-    date: '2018-03-28T14:00:00+00:00',
+    date: '2018-03-28',
     category: 'drinks',
     description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
     city: 'Kinshasa, CD',
@@ -53,25 +54,87 @@ const Posts = [
 ]
  class Dashboard extends Component {
      state = {
-         posts: Posts,
-         isOpen: false 
+         Posts: Posts,
+         isOpen: false,
+         selectedPost: null 
      }
-     handleIsOpenToggle = () =>
-     {
-        this.setState(({isOpen}) => ({
-            isOpen: !isOpen
-        }))         
+    // handleIsOpenToggle = () =>
+    //  {
+    //     this.setState(({isOpen}) => ({
+    //         isOpen: !isOpen
+    //     }))         
+    //  }
+
+    handleCreateFormOpen = () => {
+      this.setState({
+        isOpen: true,
+        selectedPost: null
+      })
+    }
+    handleFormCancel = () => {
+      this.setState( {
+        isOpen: false
+      })
+    }
+
+    handleCreatePost = (newPost) => {
+      newPost.id = cuid();
+      newPost.hostPhotoURL = '/images/user.png'
+      this.setState( ({Posts}) => ({
+        Posts: [...Posts, newPost],
+        isOpen: false
+      }))
      }
+
+     handleSelectPost = ( pst) => {
+      
+       this.setState({
+        selectedPost: pst,
+        isOpen: true
+       })
+     } 
+     
+     handleDeletePost = (id) => 
+      {
+        this.setState(({Posts}) => ({
+          Posts: Posts.filter(p => p.id !== id  )
+        }))
+      }
+
+     handleUpdatePost = (updatedPost) => {
+       this.setState(({Posts}) =>  ({
+          Posts: Posts.map(post => {
+            if(post.id === updatedPost.id){
+              return {...updatedPost}
+            }else{
+              return post
+            }
+          }),
+          isOpen: false,
+          selectedPost: null
+       }))
+
+       
+     }
+
     render() {
-        const {posts, isOpen} = this.state;
+        const {Posts, isOpen, selectedPost} = this.state;
         return (
             <Grid>
                 <Grid.Column width ={6}>
-                    <Button onClick={this.handleIsOpenToggle} positive content="Add Post"/>
-                    {isOpen && <PostForm cancelForm ={this.handleIsOpenToggle}/>}
+                    <Button onClick={this.handleCreateFormOpen} positive content="Add Post"/>
+                    {isOpen && <PostForm
+                     key={selectedPost ? selectedPost.id : 0} 
+                     updatePost = {this.handleUpdatePost}
+                     createPost={this.handleCreatePost} 
+                     cancelForm ={this.handleFormCancel} 
+                     selectedPost={selectedPost}/>}
                     </Grid.Column>
                 <Grid.Column width={10}>
-                    <PostList posts = {Posts}/>
+                    <PostList 
+                    posts = {Posts} 
+                    deletePost={this.handleDeletePost}
+                    selectPost={this.handleSelectPost} />
                 </Grid.Column>
             </Grid>
         )

@@ -4,7 +4,8 @@ import PostListAttendee from './PostListAttendee'
 
  class PostListItem extends Component {
     render() {
-        const {post} = this.props;
+        const {post, selectPost, deletePost} = this.props;
+        
         return (
                  <Segment.Group>
                     <Segment>
@@ -12,9 +13,9 @@ import PostListAttendee from './PostListAttendee'
                         <Item>
                           <Item.Image size="tiny" circular src={post.hostPhotoURL} />
                           <Item.Content>
-                            <Item.Header as="a">{post.title}</Item.Header>
+                            <Item.Header >{post.title}</Item.Header>
                             <Item.Description>
-                              Hosted by <a>{post.hostedBy}</a>
+                              Hosted by {post.hostedBy}
                             </Item.Description>
                           </Item.Content>
                         </Item>
@@ -28,7 +29,7 @@ import PostListAttendee from './PostListAttendee'
                     </Segment>
                     <Segment secondary>
                       <List horizontal>
-                        {post.attendees.map(attendee => (
+                        {post.attendees && post.attendees.map(attendee => (
                           <PostListAttendee key={attendee.id} attendee={attendee}/>
                         ))}
                         
@@ -36,7 +37,8 @@ import PostListAttendee from './PostListAttendee'
                     </Segment>
                     <Segment clearing>
                       <span>{post.description}</span>
-                      <Button as="a" color="teal" floated="right" content="View" />
+                      <Button onClick={() => selectPost(post)} as="a" color="teal" floated="left" content="View" />
+                      <Button onClick={() => deletePost(post.id)} as="a" color="red" floated="right" content="Delete" />
                     </Segment>
                   </Segment.Group>
         )
