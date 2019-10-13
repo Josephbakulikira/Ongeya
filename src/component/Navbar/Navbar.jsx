@@ -1,26 +1,41 @@
 import React, { Component } from 'react'
 import { Menu, Container, Button, Icon } from 'semantic-ui-react'
+import { NavLink, Link, withRouter } from 'react-router-dom'
+import SignedOutMenu from './Menus/SignedOutMenu'
+import SignedInMenu from './Menus/SignedInMenu'
 
  class Navbar extends Component {
+    state = {
+      authenticated: false
+    }
+
+    handleSignedIn = () => 
+        this.setState({authenticated: true});
+    handleSignedOut = () => {
+        this.setState({authenticated: false});
+        this.props.history.push('/');
+      }
+
     render() {
+      const {authenticated} = this.state;
         return (
                   <Menu inverted fixed="top">
                     <Container>
-                      <Menu.Item header>
+                      <Menu.Item as={NavLink} exact to='/' header>
                         <img src="../images/logo1.png" alt="logo" />  ONGEYA
                           
                       </Menu.Item>
-                      <Menu.Item name="Posts" style={{marginLeft: '20.5em'}}/>
+                      <Menu.Item as={NavLink} to='/posts' name="Posts" />
+                      <Menu.Item as={NavLink} to='/people' name="People" />
                       <Menu.Item>
-                        <Button   inverted  ><Icon fitted name='plus'/></Button>
+                        <Button  as={Link} to='createposts' inverted  ><Icon fitted name='plus'/></Button>
                       </Menu.Item>
-                      <Menu.Item position="right">
-                        <Button basic inverted content="Login" />
-                        <Button basic inverted content="Sign Out" style={{marginLeft: '0.5em'}} />
-                      </Menu.Item>
+                      {authenticated ? <SignedInMenu signOut={this.handleSignedOut}/> : <SignedOutMenu signIn={this.handleSignedIn}/>}
+                      
+                      
                     </Container>
                   </Menu>
         )
     }
 }
-export default Navbar;
+export default withRouter (Navbar);
