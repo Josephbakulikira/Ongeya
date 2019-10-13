@@ -1,13 +1,37 @@
 import React, { Component } from 'react'
 import { Segment, Form, Button,  } from 'semantic-ui-react'
+import { connect } from 'react-redux';
+import { createPost, updatePost} from '../../PostRedux/PostActions'
+import cuid from 'cuid';
 
-class PostForm extends Component {
-  state = {
+
+const mapState = (state, ownProps) => {
+  const postId = ownProps.match.params.id;
+
+  let post = {
     title: '',
     date: '',
     city: '',
     venue: '',
     hostedBy: ''
+  }
+  if(postId && state.posts.length > 0){
+    post = state.posts.filter(post => post.id === postId)[0]
+  }
+
+  return {
+    post
+  }
+}
+
+const actions = {
+  createPost,
+  updatePost
+}
+
+class PostForm extends Component {
+  state = {
+    ...this.props.post
   };
   componentDidMount()
   {
@@ -24,9 +48,18 @@ class PostForm extends Component {
     event.preventDefault();
     if(this.state.id)
     {
+
       this.props.updatePost(this.state);
+      this.props.history.push(`/posts/${this.state.id}`)
     }else{
-      this.props.createPost(this.state);
+      const newPost = {
+        ...this.state, 
+
+        id: cuid(),
+        hostPhotoURL: '/images/user.png'
+      }
+      this.props.createPost(newPost);
+      this.props.history.push(`/posts`)
     }
     
     
@@ -42,7 +75,7 @@ class PostForm extends Component {
   };
 
   render() {
-      const {cancelForm} = this.props;
+
       const {title, city, date, venue, hostedBy} = this.state;
         return (
                   <Segment>
@@ -70,10 +103,10 @@ class PostForm extends Component {
                       <Button positive type="submit">
                         Submit
                       </Button>
-                      <Button onClick={cancelForm} type="button">Cancel</Button>
+                      <Button onClick={this.props.history.goBack} type="button">Cancel</Button>
                     </Form>
                   </Segment>
         )
     }
 }
-export default PostForm;
+export default connect(mapState, actions)(PostForm);

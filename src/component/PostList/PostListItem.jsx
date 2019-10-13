@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Segment, Item, Icon, Button, List } from 'semantic-ui-react'
 import PostListAttendee from './PostListAttendee'
+import { Link } from 'react-router-dom';
 
  class PostListItem extends Component {
     render() {
-        const {post, selectPost, deletePost} = this.props;
+        const {post, deletePost} = this.props;
         
         return (
                  <Segment.Group>
@@ -37,7 +38,7 @@ import PostListAttendee from './PostListAttendee'
                     </Segment>
                     <Segment clearing>
                       <span>{post.description}</span>
-                      <Button onClick={() => selectPost(post)} as="a" color="teal" floated="left" content="View" />
+                      <Button  as={Link} to={`/posts/${post.id}`} color="teal" floated="left" content="View" />
                       <Button onClick={() => deletePost(post.id)} as="a" color="red" floated="right" content="Delete" />
                     </Segment>
                   </Segment.Group>

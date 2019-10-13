@@ -2,13 +2,14 @@ import React, { Component, Fragment } from "react";
 import {  Container } from "semantic-ui-react"
 import Dashboard from "../component/Dashboard/Dashboard";
 import Navbar from "../component/Navbar/Navbar";
-import { Route } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import HomePage from "../component/Home/HomePage";
 import PostDetailPage from "../component/PostList/PostDetail/PostDetailPage";
 import peopleDashboard from "../component/user/People Dashboard/peopleDashboard";
 import SettingDashboard from "../component/user/settings/SettingDashboard";
 import UserDetailedPage from "../component/user/user Details/UserDetailedPage";
 import PostForm from "../component/PostList/Formular/PostForm";
+import testComponent from "../component/test Area/testComponent";
 
 
 class App extends Component {
@@ -20,13 +21,15 @@ class App extends Component {
             <Fragment>
             <Navbar />
             <Container className="main">
-              
-              <Route path='/posts' component={Dashboard} />
-              <Route path='/posts/:id' component={PostDetailPage} />
-              <Route path='/people' component={peopleDashboard} />
-              <Route path='/profile/:id' component={UserDetailedPage} />
-              <Route path='/settings' component={SettingDashboard} />
-              <Route path='/createposts' component={PostForm} />
+              <Switch key={this.props.location.key}>
+                <Route exact path='/posts' component={Dashboard} />
+                <Route path='/posts/:id' component={PostDetailPage} />
+                <Route path='/people' component={peopleDashboard} />
+                <Route path='/profile/:id' component={UserDetailedPage} />
+                <Route path='/settings' component={SettingDashboard} />
+                <Route path={['/createposts', '/manage/:id']} component={PostForm} />
+                <Route path='/test' component={testComponent} />
+              </Switch>
               
             </Container>
             </Fragment>
@@ -38,4 +41,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

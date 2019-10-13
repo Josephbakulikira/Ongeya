@@ -25,8 +25,9 @@ import SignedInMenu from './Menus/SignedInMenu'
                         <img src="../images/logo1.png" alt="logo" />  ONGEYA
                           
                       </Menu.Item>
-                      <Menu.Item as={NavLink} to='/posts' name="Posts" />
+                      <Menu.Item as={NavLink} exact to='/posts' name="Posts" />
                       <Menu.Item as={NavLink} to='/people' name="People" />
+                      <Menu.Item as={NavLink} to='/test' name="essais" />
                       <Menu.Item>
                         <Button  as={Link} to='createposts' inverted  ><Icon fitted name='plus'/></Button>
                       </Menu.Item>

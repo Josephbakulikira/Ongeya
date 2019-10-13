@@ -5,15 +5,25 @@ import App from './MainApp/App.jsx';
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css'
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { ConfigureStore } from './MainApp/Store/ConfigureStore';
+import ScrollToTop from './MainApp/common/util/ScrollToTop'
 
 const rootElement = document.getElementById ('root');
-
+const store = ConfigureStore(); 
+console.log(store.getState());
 let render = () => 
 {
     ReactDOM.render(
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <Provider store={store}>
+            <BrowserRouter>
+            <ScrollToTop>
+                <App/>
+            </ScrollToTop>
+            
+            </BrowserRouter>
+        </Provider>
+        
     , rootElement)
 }
 if(module.hot)
@@ -24,7 +34,13 @@ if(module.hot)
 }
 
 ReactDOM.render(
-<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
+<Provider store={store}>
+            <BrowserRouter>
+            <ScrollToTop>
+                <App/>
+            </ScrollToTop>
+            </BrowserRouter>
+        </Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
