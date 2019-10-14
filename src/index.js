@@ -8,10 +8,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConfigureStore } from './MainApp/Store/ConfigureStore';
 import ScrollToTop from './MainApp/common/util/ScrollToTop'
+import { loadPosts } from './component/PostRedux/PostActions';
+
+
+const store = ConfigureStore(); 
+store.dispatch(loadPosts())
+
 
 const rootElement = document.getElementById ('root');
-const store = ConfigureStore(); 
-console.log(store.getState());
 let render = () => 
 {
     ReactDOM.render(

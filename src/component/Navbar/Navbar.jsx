@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {connect} from 'react-redux'
 import { Menu, Container, Button, Icon } from 'semantic-ui-react'
 import { NavLink, Link, withRouter } from 'react-router-dom'
@@ -41,11 +41,13 @@ const mapState =(state) => ({
                           
                       </Menu.Item>
                       <Menu.Item as={NavLink} exact to='/posts' name="Posts" />
+                      {authenticated && <Fragment>
                       <Menu.Item as={NavLink} to='/people' name="People" />
                       <Menu.Item as={NavLink} to='/test' name="essais" />
                       <Menu.Item>
                         <Button  as={Link} to='createposts' inverted  ><Icon fitted name='plus'/></Button>
                       </Menu.Item>
+                      </Fragment>}
                       {authenticated ? <SignedInMenu signOut={this.handleSignedOut} currentUser={auth.currentUser} /> 
                                      : <SignedOutMenu signIn={this.handleSignedIn} 
                                      
