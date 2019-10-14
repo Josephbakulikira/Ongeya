@@ -1,5 +1,7 @@
+/*global google*/
+
 import React, { Component } from 'react'
-import { Segment, Form, Button, Grid, Header, Input,  } from 'semantic-ui-react'
+import { Segment, Form, Button, Grid, Header,   } from 'semantic-ui-react'
 import {reduxForm, Field} from 'redux-form'
 import { connect } from 'react-redux';
 import {composeValidators, combineValidators, isRequired, hasLengthGreaterThan} from 'revalidate';
@@ -9,6 +11,8 @@ import TextInput from '../../../MainApp/Form/TextInput';
 import TextArea from '../../../MainApp/Form/TextArea';
 import SelectInput from '../../../MainApp/Form/SelectInput';
 import DateInput from '../../../MainApp/Form/DateInput';
+import PlaceInput from '../../../MainApp/Form/PlaceInput';
+import {geocodeByAddress, getLatLng} from 'react-places-autocomplete'
 
 
 const mapState = (state, ownProps) => {
@@ -36,8 +40,8 @@ const validate = combineValidators({
     isRequired({message: 'please enter the description'}),
     hasLengthGreaterThan(6)({message: 'the description need to be at least 7 letter or character'})
   )(),
-  city: isRequired('city'),
-  venue: isRequired('address'),
+  // city: isRequired('city'),
+  // venue: isRequired('address'),
   date : isRequired('date')
 })
 
@@ -57,10 +61,14 @@ const category = [
 ];
 
 class PostForm extends Component {
-  
+  state = {
+    cityLatLng: {},
+    venueLatLng: {}
+  }
 
   handleSubmitOfForm = values => 
   {
+    values.venueLatLng = this.state.venueLatLng;
    
     if(this.props.initialValues.id)
     {
@@ -87,6 +95,28 @@ class PostForm extends Component {
       [name]: value
     });
   };
+  
+  handleCitySelect = selectedCity => {
+    geocodeByAddress(selectedCity)
+    .then(results => getLatLng(results[0]))
+    .then(latlng => {this.setState({
+      cityLatLng: latlng
+    })})
+    .then(() => {
+      this.props.change('city', selectedCity)
+    })
+  }
+  
+  handleVenueSelect = selectedVenue => {
+    geocodeByAddress(selectedVenue)
+    .then(results => getLatLng(results[0]))
+    .then(latlng => {this.setState({
+      venueLatLng: latlng
+    })})
+    .then(() => {
+      this.props.change('venue', selectedVenue)
+    })
+  }
 
   render() {
         const {history, initialValues, invalid, submitting, pristine} = this.props
@@ -102,8 +132,25 @@ class PostForm extends Component {
                       <Field name='category' component={SelectInput} options={category}  placeholder='what is it about'/>
 
                       <Header sub color='teal' content='Post Location Details'/>
-                      <Field name='venue' component={TextInput} placeholder='post address'/>
-                      <Field name='city' component={TextInput} placeholder='post town'/>
+                      <Field 
+                      name='city' 
+                      component={PlaceInput} 
+                      options={{types: ['(cities)'] }} 
+                      onSelect={this.handleCitySelect} 
+                      placeholder='post city'/>
+
+                      <Field 
+                      name='venue' 
+                      component={PlaceInput}
+                      options={{
+                        location: new google.maps.LatLng(this.state.cityLatLng),
+                        radius: 1000,
+                        types: ['establishment']
+                      }}
+                      onSelect={this.handleVenueSelect}
+                      placeholder='post address'/>
+                      
+                      
                       <Field name='date' 
                       component={DateInput} 
                       dateFormat='dd LLL yyyy h:mm a' 

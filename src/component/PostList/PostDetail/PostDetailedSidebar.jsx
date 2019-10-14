@@ -12,13 +12,14 @@ const PostDetailedSidebar = ({attendees}) => {
                 secondary
                 inverted
                 color='teal'
+                
               >
                 {attendees && attendees.length} {attendees && attendees.length  === 1 ? 'Person' : 'People'} Live
               </Segment>
               <Segment attached>
                 <Item.Group divided>
                 {attendees && attendees.map((attendee) => (
-                    <Item Key={attendee.id} style={{ position: 'relative' }}>
+                    <Item key={attendee.id} style={{ position: 'relative' }}>
                     {isHost && <Label
                       style={{ position: 'absolute' }}
                       color='orange'
@@ -28,7 +29,7 @@ const PostDetailedSidebar = ({attendees}) => {
                     </Label>}
                     
                     <Item.Image size='tiny' src={attendee.photoURL} />
-                    <Item.Content verticalAlign='middle'>
+                    <Item.Content  verticalAlign='middle'>
                       <Item.Header as='h3'>{attendee.name}</Item.Header>
                     </Item.Content>
                     </Item>

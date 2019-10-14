@@ -1,0 +1,43 @@
+import React from 'react'
+import PlacesAutocomplete from 'react-places-autocomplete'
+import { Form, Segment, Label, List } from 'semantic-ui-react'
+
+const PlaceInput = ({input: {value, onChange, onSelect, onBlur, }, width, placeholder, options, meta: {touched, error} }) => {
+    return (
+        <PlacesAutocomplete 
+            value={value} 
+            onChange={onChange} 
+            searchOptions={options}
+            onSelect={onSelect}>
+
+                {({getInputProps, suggestions, getSuggestionsItemProps, loading}) => (
+                    <Form.Field error={touched && !!error}>
+                        <input placeholder={placeholder} {...getInputProps({placeholder,onBlur})} />
+                        {touched && error && <Label basic color='red'>{error}</Label>}
+                        {suggestions.length > 0 && (
+                            <Segment style={{   marginTop: 0, 
+                                                position: 'absolute', 
+                                                zIndex: 1000, 
+                                                width: '100%' }}> 
+                                {loading && <div>Loading ...</div>}
+                                <List selection>
+                                    {suggestions.map(suggestion => (
+                                        <List.Item {...getSuggestionsItemProps(suggestion)}>
+                                            <List.Header>
+                                                {suggestion.formattedSuggestion.mainText}
+                                            </List.Header>
+                                            <List.Description>
+                                                {suggestion.formattedSuggestion.secondaryText}
+                                            </List.Description>
+                                        </List.Item>
+                                    ))}
+                                </List>
+                            </Segment>
+                        )}
+                    </Form.Field>
+                )}
+        </PlacesAutocomplete>
+    )
+}
+
+export default PlaceInput
