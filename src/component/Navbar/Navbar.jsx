@@ -1,23 +1,38 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import {connect} from 'react-redux'
 import { Menu, Container, Button, Icon } from 'semantic-ui-react'
 import { NavLink, Link, withRouter } from 'react-router-dom'
 import SignedOutMenu from './Menus/SignedOutMenu'
 import SignedInMenu from './Menus/SignedInMenu'
+import { openModal } from '../Modals/ModalActions';
+import { logout } from '../auth/AuthActions';
 
+
+const actions = {
+  openModal,
+  logout
+}
+const mapState =(state) => ({
+  auth: state.auth
+})
  class Navbar extends Component {
-    state = {
-      authenticated: false
-    }
+    
 
     handleSignedIn = () => 
-        this.setState({authenticated: true});
+        this.props.openModal('LoginModal')
+    
+    handleRegister = () => {
+      this.props.openModal('RegisterModal')
+    }
+        
     handleSignedOut = () => {
-        this.setState({authenticated: false});
+        this.props.logout()
         this.props.history.push('/');
       }
 
     render() {
-      const {authenticated} = this.state;
+      const { auth } = this.props;
+      const authenticated = auth.authenticated;
         return (
                   <Menu inverted fixed="top">
                     <Container>
@@ -31,7 +46,10 @@ import SignedInMenu from './Menus/SignedInMenu'
                       <Menu.Item>
                         <Button  as={Link} to='createposts' inverted  ><Icon fitted name='plus'/></Button>
                       </Menu.Item>
-                      {authenticated ? <SignedInMenu signOut={this.handleSignedOut}/> : <SignedOutMenu signIn={this.handleSignedIn}/>}
+                      {authenticated ? <SignedInMenu signOut={this.handleSignedOut} currentUser={auth.currentUser} /> 
+                                     : <SignedOutMenu signIn={this.handleSignedIn} 
+                                     
+                                     register={this.handleRegister}/>}
                       
                       
                     </Container>
@@ -39,4 +57,4 @@ import SignedInMenu from './Menus/SignedInMenu'
         )
     }
 }
-export default withRouter (Navbar);
+export default withRouter(connect(mapState, actions)(Navbar));

@@ -14,7 +14,7 @@ class TestPlaceInput extends React.Component {
   
 
   render() {
-    const {selectAddress} = this.props
+   
     return (
 
       <PlacesAutocomplete
