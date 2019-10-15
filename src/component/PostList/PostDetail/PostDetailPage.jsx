@@ -30,7 +30,7 @@ const PostDetailPage = ({post}) => {
                 <PostDetailedChat />
             </Grid.Column>
             <Grid.Column width={6}>
-                <PostDetailedSidebar attendees={post.attendees}/>s
+                <PostDetailedSidebar attendees={post.attendees}/>
             </Grid.Column>
             
         </Grid>   

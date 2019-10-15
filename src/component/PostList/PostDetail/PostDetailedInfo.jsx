@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { Segment, Icon, Grid, Button } from 'semantic-ui-react'
 import PostDetailedMap from './PostDetailedMap'
+import {format, parseISO} from 'date-fns'
 
 const PostDetailedInfo = ({post}) => {
     const[isMapOpen, showMapToggle] = useState(false) 
@@ -22,7 +23,7 @@ const PostDetailedInfo = ({post}) => {
                     <Icon name="calendar" size="large" color="teal" />
                   </Grid.Column>
                   <Grid.Column width={15}>
-                    <span>{post.date}</span>
+                   {post.date && <span>{format( parseISO(post.date), 'EEEE do LLL')} at{' '} {format(parseISO(post.date), 'h:mm a')}</span>}
                   </Grid.Column>
                 </Grid>
               </Segment>

@@ -4,9 +4,11 @@ import PostList from '../PostList/PostList'
 import { connect } from 'react-redux'
 import {createPost, deletePost, updatePost} from '../PostRedux/PostActions'
 import LoadingComponent from '../../MainApp/LoadingComponent'
+import PostActivity from '../PostList/PostNotifications/PostActivity'
+import { firestoreConnect } from 'react-redux-firebase'
  
  const mapState = (state) => ({
-   posts: state.posts,
+   posts: state.firestore.ordered.posts,
    loading: state.async.loading
  })
  
@@ -30,7 +32,7 @@ import LoadingComponent from '../../MainApp/LoadingComponent'
         return (
             <Grid>
                 <Grid.Column width ={6}>
-                  <h1>Notification feed</h1>    
+                  <PostActivity />    
                 </Grid.Column>
                 <Grid.Column width={10}>
                     <PostList 
@@ -42,4 +44,4 @@ import LoadingComponent from '../../MainApp/LoadingComponent'
         )
     }
 }
-export default connect(mapState, actions)(Dashboard);
+export default connect(mapState, actions)(firestoreConnect([{collection: 'posts'}]) (Dashboard));

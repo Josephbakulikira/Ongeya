@@ -1,6 +1,7 @@
 import React from 'react'
 import { Segment, Image, Button, Header, Item } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
+import {format, parseISO} from 'date-fns'
 
 const postImageStyle = {
     filter: 'brightness(30%)'
@@ -30,7 +31,7 @@ const PostDetailHeader = ({post}) => {
                           content={post.title}
                           style={{ color: 'white' }}
                         />
-                        <p>{post.date}</p>
+                        <p>{post.date && format(parseISO(post.date),  'EEEE do LLLL')}</p>
                         <p>
                           Hosted by <strong>{post.hostedBy}</strong>
                         </p>

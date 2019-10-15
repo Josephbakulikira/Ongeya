@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Segment, Item, Icon, Button, List } from 'semantic-ui-react'
 import PostListAttendee from './PostListAttendee'
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+
 
  class PostListItem extends Component {
     render() {
@@ -24,14 +26,14 @@ import { Link } from 'react-router-dom';
                     </Segment>
                     <Segment>
                       <span>
-                        <Icon name="clock" /> {post.date}
+                        <Icon name="clock" /> {format(post.date.toDate(), 'EEEE do LLL')} at{' '} {format(post.date.toDate(), 'h:mm a')}
                         <Icon name="marker" /> {post.venue}
                       </span>
                     </Segment>
                     <Segment secondary>
                       <List horizontal>
-                        {post.attendees && post.attendees.map(attendee => (
-                          <PostListAttendee key={attendee.id} attendee={attendee}/>
+                        {post.attendees && Object.values( post.attendees).map((attendee, index) => (
+                          <PostListAttendee key={index} attendee={attendee}/>
                         ))}
                         
                       </List>

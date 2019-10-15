@@ -7,7 +7,7 @@ class PostList extends Component {
         const {posts, deletePost} = this.props
         return (
             <Fragment>
-                {posts.map(post => (
+                {posts && posts.map(post => (
                     <PostListItem deletePost={deletePost} key={post.id} post={post} />
                 ))}
             </Fragment>
