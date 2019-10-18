@@ -4,6 +4,7 @@ import PostDetailedMap from './PostDetailedMap'
 import {format, parseISO} from 'date-fns'
 
 const PostDetailedInfo = ({post}) => {
+  
     const[isMapOpen, showMapToggle] = useState(false) 
     return (
            <Segment.Group>

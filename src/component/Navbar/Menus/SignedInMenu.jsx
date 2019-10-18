@@ -1,12 +1,13 @@
 import React from 'react'
 import { Menu, Image, Dropdown } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
+import { auth } from 'firebase'
 
-const SignedInMenu = ({signOut, currentUser}) => {
+const SignedInMenu = ({signOut, profile}) => {
     return (
             <Menu.Item position="right">
-              <Image avatar spaced="right" src='/images/user.png' />
-              <Dropdown pointing="top left" text={currentUser}>
+              <Image avatar spaced="right" src={profile.photoURL || '/images/user.png'} />
+              <Dropdown pointing="top left" text={profile.displayName || auth.displayName}>
                 <Dropdown.Menu>
                   <Dropdown.Item text="Create Posts" icon="plus" />
                   <Dropdown.Item text="My Profile" icon="user" />

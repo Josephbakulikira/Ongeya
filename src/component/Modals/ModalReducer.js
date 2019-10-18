@@ -1,5 +1,5 @@
 import { createReducer } from "../../MainApp/common/util/ReducerUtil";
-import { MODAL_OPEN, MODAL_CLOSE } from "./ModalConstanr";
+import { MODAL_OPEN, MODAL_CLOSE } from "./ModalConstant";
 
 const initialState = null;
 

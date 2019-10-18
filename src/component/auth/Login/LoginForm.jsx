@@ -1,17 +1,19 @@
 import React from 'react';
-import { Form, Segment, Button } from 'semantic-ui-react';
+import { Form, Segment, Button, Label, Divider } from 'semantic-ui-react';
 import { Field, reduxForm } from 'redux-form';
 import TextInput from '../../../MainApp/Form/TextInput';
-import {login} from '../AuthActions'
+import {login, socialLogin} from '../AuthActions'
 import { connect } from 'react-redux';
+import SocialLogin from '../socialLogin/SocialLogin';
 
 const actions = {
-    login
+    login,
+    socialLogin
 }
 
-const LoginForm = ({login, handleSubmit}) => {
+const LoginForm = ({login, handleSubmit, error, socialLogin}) => {
   return (
-    <Form error size="large" onSubmit={handleSubmit(login)} autoComplete='off'>
+    <Form size="large" onSubmit={handleSubmit(login)} autoComplete='off'>
       <Segment >
         <Field
           name="email"
@@ -25,9 +27,14 @@ const LoginForm = ({login, handleSubmit}) => {
           type="password"
           placeholder="password"
         />
+        {error && <Label basic color='red' >{error}</Label>}
         <Button fluid size="large" color="teal">
           Login
         </Button>
+        <Divider horizontal>
+          OR
+        </Divider>
+        <SocialLogin socialLogin={socialLogin} />
       </Segment>
     </Form>
   );
