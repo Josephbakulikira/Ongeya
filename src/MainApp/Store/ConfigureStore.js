@@ -20,7 +20,7 @@ export const ConfigureStore = () => {
         applyMiddleware(...middleWares), 
         reactReduxFirebase(firebase, rrfConfig),
         reduxFirestore (firebase));
-
+        
     const store = createStore(RootReducer, composedEnhancer)
 
     return store;

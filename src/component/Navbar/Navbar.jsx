@@ -31,7 +31,7 @@ const mapState =(state) => ({
     }
         
     handleSignedOut = () => {
-        this.props.firebase.logout()
+        this.props.firebase.logout();
         this.props.history.push('/');
       }
 

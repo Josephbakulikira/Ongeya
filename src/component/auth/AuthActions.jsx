@@ -18,26 +18,26 @@ export const login = (creds) => {
         
     }   
 }
-
-export const registerUser = user => 
-      async (dispatch, getState, {getFirebase, getFirestore}) => {
-         const firebase = getFirebase();
-         const firestore = getFirestore();
-         try{
-             let createdUser = await firebase
-             .auth()
-             .createUserWithEmailAndPassword(user.email, user.password);
-             
-             await createdUser.user.updateProfile({
-                 displayName: user.displayName
-             })
-             let newUser = {
-                 displayName: user.displayName,
-                 createdAt: firestore.FieldValue.serverTimestamp()
-             };
-             console.log(user)
-             await firestore.set(`users/${createdUser.user.uid}`, {...newUser});
-             dispatch(closeModal());
+export const registerUser = user => async (
+    dispatch,
+    getState,
+    { getFirebase, getFirestore }
+  ) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    try {
+      let createdUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(user.email, user.password);
+      await createdUser.user.updateProfile({
+        displayName: user.displayName
+      })
+      let newUser = {
+        displayName: user.displayName,
+        createdAt: firestore.FieldValue.serverTimestamp()
+      };
+      await firestore.set(`users/${createdUser.user.uid}`, {...newUser})
+      dispatch(closeModal());
          }catch(error){
              console.log(error);
              throw new SubmissionError({
@@ -46,31 +46,74 @@ export const registerUser = user =>
          }
      }
      
-     export const socialLogin = (selectedProvider) => 
-        async (dispatch, getState, {getFirebase, getFirestore})=>{
-            const firebase = getFirebase();
-            const firestore = getFirestore();
-            try{
+    //  export const socialLogin = (selectedProvider) => 
+    //  async (dispatch, getState, { getFirebase, getFirestore }) => {
+    //    const firebase = getFirebase();
+    //    const firestore = getFirestore();
+    //    try {
+    //      dispatch(closeModal());
+    //      let user = await firebase.login({
+    //        provider: selectedProvider,
+    //        type: 'popup'
+    //      })
+    //      if (user.additionalUserInfo.isNewUser) {
+    //        await firestore.set(`users/${user.user.uid}`, {
+    //          displayName: user.profile.displayName,
+    //          photoURL: user.profile.avatarUrl,
+    //          createdAt: firestore.FieldValue.serverTimestamp()
+    //        })
+    //      }
+    //    } catch (error) {
+    //      console.log(error)
+    //    }
+    //  }
+    //  export const socialLogin = (selectedProvider) => 
+    //     async (dispatch, getState, {getFirebase, getFirestore})=>{
+    //         const firebase = getFirebase();
+    //         const firestore = getFirestore();
+    //         try{
                 
-                dispatch(closeModal());
-                let user = await firebase.login({
-                    provider: selectedProvider,
-                    type: 'popup'
-                })
+    //             dispatch(closeModal());
+    //             let user = await firebase.login({
+    //                 provider: selectedProvider,
+    //                 type: 'popup'
+    //             })
                 
-                if(user.additionalUserInfo.isNewUser)
-                {
-                    await firestore.set(`users/${user.user.uid}`, {
-                        displayName: user.profile.displayName,
-                        photoURL: user.profile.avatarURL,
-                        createdAt: firestore.FieldValue.serverTimestamp()
-                    })
-                }
-            }catch(error){
-                console.log(error)
-            }
+    //             if(user.additionalUserInfo.isNewUser)
+    //             {
+    //                 await firestore.set(`users/${user.user.uid}`, {
+    //                     displayName: user.auth.displayName,
+    //                     photoURL: user.auth.avatarURL,
+    //                     createdAt: firestore.FieldValue.serverTimestamp()
+    //                 })
+    //             }
+    //         }catch(error){
+    //             console.log(error)
+    //         }
             
+    //     }
+
+    export const socialLogin = (selectedProvider) => 
+    async (dispatch, getState, { getFirebase, getFirestore }) => {
+      const firebase = getFirebase();
+      const firestore = getFirestore();
+      try {
+        dispatch(closeModal());
+        let user = await firebase.login({
+          provider: selectedProvider,
+          type: 'popup'
+        })
+        if (user.additionalUserInfo.isNewUser) {
+          await firestore.set(`users/${user.user.uid}`, {
+            displayName: user.profile.displayName,
+            photoURL: user.profile.avatarUrl,
+            createdAt: firestore.FieldValue.serverTimestamp()
+          })
         }
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
 export const updatePassword = (creds) => 
         async (dispatch, getState, {getFirebase}) => 
@@ -81,7 +124,7 @@ export const updatePassword = (creds) =>
             try{
                 await user.updatePassword(creds.newPassword1);
                 await dispatch(reset('account'));
-                toastr.success('Succes', 'Your Password has been updated');
+                toastr.success('Success', 'Your Password has been updated');
             }catch(error){
                 throw new SubmissionError({
                     _error: error.message 

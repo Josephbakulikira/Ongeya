@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import TextInput from '../../../MainApp/Form/TextInput';
 import { connect } from 'react-redux';
 import { registerUser } from '../AuthActions';
-import SocialLogin from '../socialLogin/SocialLogin';
+// import SocialLogin from '../socialLogin/SocialLogin';
 
 
 const actions = {
@@ -40,7 +40,7 @@ const RegisterForm = ({handleSubmit, registerUser}) => {
           <Divider Horizontal>
           or
         </Divider>
-          <SocialLogin/>
+          {/* <SocialLogin/> */}
         </Segment>
       </Form>
     </div>
