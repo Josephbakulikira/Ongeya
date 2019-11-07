@@ -54,7 +54,7 @@ const mapState =(state) => ({
                         <Button  as={Link} to='createposts' inverted  ><Icon fitted name='plus'/></Button>
                       </Menu.Item>
                       </Fragment>}
-                      {authenticated ? <SignedInMenu signOut={this.handleSignedOut} profile={profile} auth={auth} /> 
+                      {authenticated ? <SignedInMenu auth={auth} signOut={this.handleSignedOut} profile={profile} /> 
                                      : <SignedOutMenu signIn={this.handleSignedIn} 
                                      
                                      register={this.handleRegister}/>}

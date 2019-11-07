@@ -1,15 +1,35 @@
 import React, {useState, useEffect, Fragment} from 'react';
-import {Image, Segment, Header, Divider, Grid, Button, Card} from 'semantic-ui-react';
+import { Segment, Header, Divider, Grid, Button} from 'semantic-ui-react';
 import DropzoneIput from './photoa/DropzoneInput';
 import CropperInput from './photoa/CropperInput';
 import { connect } from 'react-redux';
-import { uploadProfileImage } from '../UserActions';
+import { uploadProfileImage, deletePhoto, setMainPhoto } from '../UserActions';
 import { toastr } from 'react-redux-toastr';
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
+import  UserPhotos  from './photoa/UserPhotos';
 
-const actions ={
-    uploadProfileImage
+const query = ({auth}) => {
+    return[{
+        collection: 'users',
+        doc: auth.uid,
+        subcollections:[{collection: 'photos'}],
+        storeAs: 'photos'
+    }]
 }
-const PhotosPage =({uploadProfileImage}) => {
+const actions ={
+    uploadProfileImage,
+    deletePhoto,
+    setMainPhoto
+}
+const mapState = (state) => ({
+    auth: state.firebase.auth,
+    profile: state.firebase.profile,
+    photos: state.firestore.ordered.photos,
+    loading: state.async.loading
+})
+
+const PhotosPage =({uploadProfileImage, profile, photos, deletePhoto, setMainPhoto, loading}) => {
         const [files, setFiles] = useState([]);
         const [image, setImage] = useState(null);
 
@@ -23,6 +43,7 @@ const PhotosPage =({uploadProfileImage}) => {
             try{
                 await uploadProfileImage(image, files[0].name);
                 handleCropCancel();
+                window.location.reload();
                 toastr.success('Success', 'your photo has been uploaded')
             }
             catch(error)
@@ -35,7 +56,20 @@ const PhotosPage =({uploadProfileImage}) => {
             setFiles([]);
             setImage(null);
         }
-
+        const handleDeletePhoto = async (photo) => {
+            try{
+                await deletePhoto(photo)
+            }catch(error){
+                toastr.error('sorry there is an error', error.message)
+            }
+        }
+        const handleSetMain = async (photo) => {
+            try{
+                await setMainPhoto(photo)
+            }catch(error){
+                toastr.error('oops', error.message)
+            }
+        }
         return (
             <Segment>
                 <Header dividing size='large' content='Your Photos' />
@@ -58,8 +92,8 @@ const PhotosPage =({uploadProfileImage}) => {
                            <Fragment>
                             <div className='img-preview'  style={{minHeight: '200px', minWidth: '200px', overflow:'hidden'}} />
                             <Button.Group>
-                                <Button onClick={handleUploadImage} style={{width: '100px'}} positive icon='check'/>
-                                <Button onClick={handleCropCancel} style={{width: '100px'}} negative icon='close'/>
+                                <Button loading={loading} onClick={handleUploadImage} style={{width: '100px'}} positive icon='check'/>
+                                <Button disabled={loading   } onClick={handleCropCancel} style={{width: '100px'}} negative icon='close'/>
                             </Button.Group>
                            </Fragment> 
                         }
@@ -68,27 +102,10 @@ const PhotosPage =({uploadProfileImage}) => {
                 </Grid>
                 
                 <Divider/>
-                <Header sub color='teal' content='All Photos'/>
-
-                <Card.Group itemsPerRow={5}>
-                    <Card>
-                        <Image src='https://randomuser.me/api/portraits/women/35.jpg'/>
-                        <Button positive>Main Photo</Button>
-                    </Card>
-
-                        <Card >
-                            <Image
-                                src='https://randomuser.me/api/portraits/women/19.jpg'
-                            />
-                            <div className='ui two buttons'>
-                                <Button basic color='green'>Main</Button>
-                                <Button basic icon='trash' color='red' />
-                            </div>
-                        </Card>
-                </Card.Group>
+                <UserPhotos photos={photos} profile={profile} deletePhoto={handleDeletePhoto} setMain={handleSetMain}/>
             </Segment>
         );
     
 }
 
-export default connect(null, actions)(PhotosPage);
+export default compose (connect(mapState, actions), firestoreConnect(auth => query(auth)))(PhotosPage);  
